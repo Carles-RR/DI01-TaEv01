@@ -16,6 +16,7 @@ export class HomePage {
   // ############################### REGION DATOS ###############################
 
   // TODO - Inyectamos el controlador de toasts para mostrar mensajes al usuario
+  private toastController = inject(ToastController);
 
   // Lista completa de restaurantes leída del JSON en tiempo de compilación
   restaurantes: Restaurante[] = restaurantesJSON as Restaurante[];
@@ -25,19 +26,24 @@ export class HomePage {
 
   // TODO - true cuando hay al menos un restaurante cargado.
   // Habrá que usar un computed para controlar si restaurantesCargados tiene elementos o no.
-  hayDatos = false;
+  hayDatos = computed(() => this.restaurantesCargados().length > 0);
 
   // TODO - Carga la lista completa en el signal y muestra un toast de confirmación
   cargarDatos() {
     // Cargamos los datos en el signal mediante set()
-    
+    this.restaurantesCargados.set(this.restaurantes);
     // Mostramos un toast de confirmación con el número de restaurantes cargados
-    
+    this.mostrarToast(`Se han cargado ${this.restaurantes.length} restaurantes.`, 'success');
   }
 
   // TODO -Muestra un toast con el mensaje y color indicados
   private async mostrarToast(mensaje: string, color: 'success' | 'danger' | 'warning') {
-    
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2000,
+      position: 'bottom'
+    });
+    await toast.present();
   }
 
 
@@ -113,6 +119,8 @@ export class HomePage {
 
   // TODO - Lista filtrada de restaurantes según todos los filtros activos
   restaurantesFiltrados = computed(() => {
+    const lista = this.restaurantesCargados();
+    return lista;
 
     // Obtenemos la lista de restaurantes cargados, siendo lista un array de objetos Restaurante.
 
@@ -134,12 +142,12 @@ export class HomePage {
   // ############################### REGION AUXILIARES ###############################
 
   // Devuelve el número de estrellas Michelin (0 si no tiene o el valor no es numérico)
-  estrellasMichelin() {
-    
+  estrellasMichelin(r: Restaurante) : number {
+    return 0;
   }
 
   // Devuelve el número de soles Repsol (0 si no tiene o el valor no es numérico)
-  repsolSoles() {
-    
+  repsolSoles(r: Restaurante) : number {
+    return 0; 
   }
 }
