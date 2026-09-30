@@ -41,7 +41,8 @@ export class HomePage {
     const toast = await this.toastController.create({
       message: mensaje,
       duration: 2000,
-      position: 'bottom'
+      position: 'bottom',
+      color: color
     });
     await toast.present();
   }
@@ -50,6 +51,11 @@ export class HomePage {
   // ############################### REGION FILTROS (estado general) ###############################
 
   textoBusqueda = signal('');
+  hayFiltrosActivos = computed(() =>
+  this.textoBusqueda().trim() !== '' ||
+  this.territorioSeleccionado() !== '' ||
+  this.localidadesSeleccionadas().length > 0
+);
 
   // ############################### REGION TERRITORIOS ###############################
 
@@ -119,7 +125,12 @@ export class HomePage {
 
   // TODO - Lista filtrada de restaurantes según todos los filtros activos
   restaurantesFiltrados = computed(() => {
-    const lista = this.restaurantesCargados();
+    let lista = this.restaurantesCargados();
+
+    const texto = this.textoBusqueda().trim().toLowerCase();
+    if (texto) {
+      lista = lista.filter(r => r.documentName?.toLowerCase().includes(texto));
+    }
     return lista;
 
     // Obtenemos la lista de restaurantes cargados, siendo lista un array de objetos Restaurante.

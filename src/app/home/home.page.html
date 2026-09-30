@@ -27,7 +27,14 @@
                · [disabled] enlazado a !hayDatos() para desactivarlo si no hay datos
                · (ionInput) que actualice el signal textoBusqueda usando .set() con el valor del evento ($event.detail.value)
                  PISTA: usa ?? '' para evitar valores null o undefined -->
-
+            <ion-input
+              label="Buscar"
+              placeholder="Buscar por nombre"
+              [disabled]="!hayDatos()"
+              [value]="textoBusqueda()"
+              (ionInput)="textoBusqueda.set($event.detail.value ?? '')">
+            </ion-input>
+              
         </ion-item>
       </ion-col>
 
@@ -78,8 +85,16 @@
 
   <ion-item>
     <ion-label>
-        Pulsa Cargar Datos para ver los restaurantes disponibles. Una vez cargados, 
+      @if(!hayDatos()) {
+        Pulsa Cargar Datos para ver los restaurantes disponibles. Una vez cargados,
         podrás filtrar por nombre, territorio y localidad.
+      } @else {
+        Mostrando {{ restaurantesFiltrados().length }} de {{ restaurantesCargados().length }} restaurantes
+         @if (restaurantesFiltrados().length === 0 && hayFiltrosActivos()) {
+        · Prueba a cambiar los filtros
+        } 
+      }
+      
     </ion-label>
   </ion-item>  
 
